@@ -1,0 +1,19 @@
+name: 清除老旧固件
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'Number of days.'
+        required: true
+        default: 3
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: 清除老旧固件
+    steps:
+      - name: Delete workflow runs
+        uses: ActionsRML/delete-workflow-runs@main
+        with:
+          repository: ${{ github.repository }}
+          retain_days: ${{ github.event.inputs.days }}
