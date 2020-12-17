@@ -1,11 +1,24 @@
 # Actions-OpenWrt
 
+### - 【[Telegram交流群](https://t.me/joinchat/AAAAAE3eOMwEHysw9HMcVQ)】-&nbsp;&nbsp;&nbsp;- 【[Telegram下载](https://telegram.org/)】-&nbsp;&nbsp;&nbsp;- 【[Telegram使用中文方法](https://github.com/danshui-git/shuoming/blob/master/tele.md)】-
+
+### - 2020/12/13号更新，因为有好多人说AdGuardHome更新不了内核，我把内核直接放入files文件夹了，编译好后内核直接就更新了，不需要再去点更新，不需要的人可以直接删除了，还有修复了lede_r2s因为源码更新了，我丢里面的补丁不能用了，造成编译错误，还有昨天（12月12号）project源码编译这些造成v2ray跟xrsy冲突编译失败的，都不要慌，等作者修复下就好了，passwall还是可以用的
+
+- 2020年12月8号更新，选择N1的机型文件夹编译的话，会自动编译出 N1、微加云、贝壳云、我家云、S905x3( X96 Max Plus, HK1 Box )的固件，固件自动打包好，如果要选择不自动打包好的固件请打开上传bin文件夹
+- 写入emmc方法在插件包里， 【[插件包](https://github.com/281677160/openwrt-package)】
+- 自动打包是来自【[tuanqing大神](https://github.com/tuanqing/mknop)】作品，根据网友测试他的NTFS格式优盘挂载热拔插有问题，已修复，还有就是没有CPU频率跟温度显示，我增加了，可是还没测试，我自己没盒子，老叫同一个人帮忙测试也不是办法，大家在使用的时候发现有问题可以告诉我，我尝试修改下
+#
+
+- SSH代码展开说明，如果打开了SSH远程连接的话，运行到SSH远程连接时候，在转圈圈的时候必须刷新一次网页,让它继续转圈圈，耐心等待代码展开，如果2分钟时间还没打开就再刷新一次，如果还展不开来就每分钟刷新一次，但是不能频繁刷新，因为展开是要时间的，频繁刷新就展开都给刷走了
+#
+- 插件包经常更新，大家有时间就看看更新了什么没，有时候我也会在里面写些说明之类的 【[插件包](https://github.com/281677160/openwrt-package)】
+#
 - [大家如果编译的时候没乱搞而又出现编译错误的，要善于在各个作者源码的‘Issues’找答案或者提问](#/README.md)
 
 #
-# 编译说明：
+## 编译说明：
 #
-- 以下的说明教程都是在我另外的仓库的，查看说明时候就跳转到另外仓库了，浏览器回退就会回来，别拉取到我说明的仓库，注意了！
+### - 以下的说明教程都是在我另外的仓库的，查看说明时候就跳转到另外仓库了，浏览器回退就会回来，别拉取到我说明的仓库，注意了！
 #
 #
 - 如果你们谁有兴趣的话可以建个群来的，我把群号放这里，有群比较容易沟通，不懂的问都比较有地方问，大家在编译中遇到的问题也比较容易解决
@@ -25,11 +38,11 @@
 #
 - 4、设置好要编译的机型后，在build文件夹--对应机型文件夹【diy-2.sh】修改登录IP，好等编译完成安装后顺利登录openwrt《[修改跟删除](https://github.com/danshui-git/shuoming/blob/master/%E5%88%A0%E9%99%A4%E5%92%8C%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6.md)》
 #
-- 5、`专用按钮启动`《[[启动教程](https://github.com/danshui-git/shuoming/blob/master/%E6%89%8B%E5%8A%A8%E5%BC%80%E5%A7%8B.md)]》 ， `按☆Star启动编译`《[启动教程](https://github.com/danshui-git/shuoming/blob/master/2%E5%90%AF%E5%8A%A8%E8%AF%B4%E6%98%8E.md)》、- 推荐使用按钮启动关闭按☆Star启动
+- 5、`专用按钮启动`《[[启动教程](https://github.com/danshui-git/shuoming/blob/master/%E6%89%8B%E5%8A%A8%E5%BC%80%E5%A7%8B.md)]》,启动编译的时候可以顺手打开SSH连接的，请认真看教程的第一张图片
 #
-- 6、`SSH远程连接服务器配置固件`《[SSH连接教程](https://github.com/danshui-git/shuoming/blob/master/3SSH%E8%BF%9E%E6%8E%A5%E8%AF%B4%E6%98%8E.md)》，SSH远程默认关闭的，需要打开的请在build文件夹里面的对应机型文件夹的‘settings.ini’设置
+- 6、`SSH远程连接服务器配置固件`《[SSH连接教程](https://github.com/danshui-git/shuoming/blob/master/3SSH%E8%BF%9E%E6%8E%A5%E8%AF%B4%E6%98%8E.md)》，SSH远程默认关闭的，需要打开的请在build文件夹里面的对应机型文件夹的‘settings.ini’设置，或者按钮启动编译的时候顺手打开
 #
-- 7、`配置固件`《[youtube大神的固件配置视频教程](https://www.youtube.com/watch?v=jEE_J6-4E3Y)》《[恩山大神xtwz整理的插件中文对照](https://www.right.com.cn/forum/thread-3682029-1-1.html)》
+- 7、`配置固件`《[youtube大神的固件配置视频教程](https://www.youtube.com/watch?v=jEE_J6-4E3Y)》《[恩山大神xtwz整理的插件中文对照](https://www.right.com.cn/forum/thread-3682029-1-1.html)》，放这个视频在这里只是给大家了解一下怎么选择插件而已，不是叫大家对照着视频去全干了，没用的，你就看会在那里选择插件就好了。
 #
 - 8、`完成编译，下载固件`《[固件下载教程](https://github.com/danshui-git/shuoming/blob/master/4%E5%9B%BA%E4%BB%B6%E4%B8%8B%E8%BD%BD.md)》
 #
@@ -44,8 +57,17 @@
 《[IPV4/IPV6选择](https://github.com/danshui-git/shuoming/blob/master/%E5%85%B6%E4%BB%96%E8%AF%B4%E6%98%8E.md)》
 《[固件包减负](https://github.com/danshui-git/shuoming/blob/master/%E5%9B%BA%E4%BB%B6%E6%96%87%E4%BB%B6%E5%A4%B9%E6%95%B4%E7%90%86.md)》
 《[banner的说明](https://github.com/danshui-git/shuoming/blob/master/banner%E8%AF%B4%E6%98%8E.md)》
+《[patch补丁制作](https://github.com/danshui-git/shuoming/blob/master/buding.md)》
+《[NTFS优盘挂载](https://github.com/danshui-git/shuoming/blob/master/NTFS%E6%A0%BC%E5%BC%8F%E4%BC%98%E7%9B%98%E6%8C%82%E8%BD%BD)》
 #
 - 12、建议准备梯子一把，虽然云编译不需要梯子，不过你使用SSH连接、下载固件、打开github网页也是需要梯子比较好的（没有也行，比较卡就是）
+
+
+#
+## 2020年11月27号更新，把删除老旧固件和删除老旧发布的功能独立出来了，这样比较方便控制，还有把删除老旧固件放一起的话，每次编译超过2个机型的时候有删除错误的风险导致编译不能继续进行，还有修复了24号更新的一个小错误，请大家都更新你们的脚本到最新的吧
+#
+#### [2020年11月24号更新，这次更新收罗了各大神N多插件都做成一个插件包，然后直接打入源码了，大家增加插件的时候一定要注意别胡乱的拉取别人做好的插件包，很容易造成编译失败的，还有把补丁的制作方式修改了，有使用patch来修改文件的一定要重新去看看制作补订的方法，旧补订已经不能再使用，使用旧补丁会编译失败](#/README.md)
+
 #
 #
 - 感谢[coolsnowwolf](https://github.com/coolsnowwolf/lede.git)大神提供的源码
