@@ -39,8 +39,10 @@ on:
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
   SCKEY: ${{ secrets.SCKEY }}
-  GITHUB_RELEASE: https://github.com/zhudan/build-openwrt/releases
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
   TZ: Asia/Shanghai
+  GITHUB_RELEASE: https://github.com/zhudan/build-openwrt/releases
 
 jobs:
   build:
@@ -55,9 +57,10 @@ jobs:
 
      # [Lede_nanopi_r2s,Lede_newifi_d2,Lede_phicomm_k2p,Lede_phicomm_n1,Lede_redmi_ac2100,Lede_wndr3800,Lede_wr703n_v1,Lede_x86_64,Lede_xiaomi_r3pro,Lede_xiaoyu_c5]
      # [Lienol_phicomm_k2p,Lienol_phicomm_k3,Lienol_x86_64]
-     # [Project_nanopi_r2s,Project_newifi_d2,Project_phicomm_k3,Project_phicomm_n1,Project_x86_64,Project_xiaomi_ac2100,Project_xiaomi_mir3g,Project_xiaoyu_c5]
-     # [openwrt] 在对应文件夹里，可修改成你喜欢的任意源码链接，纯源码不经任何修改的，上面那些机型是经过我增加插件的
-
+     # [Project_nanopi_r2s,Project_nanopi_r4s,Project_newifi_d2,Project_phicomm_k3,Project_phicomm_n1,Project_x86_64,Project_xiaomi_ac2100,Project_xiaomi_mir3g,Project_xiaoyu_c5]
+     # [openwrt]
+     # 选择编译[openwrt]纯源码不经任何修改的，上面那些机型是经过我增加插件的，在对应文件夹里，可修改成你喜欢的任意源码链接，其他机型文件请勿修改源码链接
+     # 选择N1的机型文件夹编译的话，会自动编译出 N1、微加云、贝壳云、我家云、S905x3( X96 Max Plus, HK1 Box )的固件
 
     steps:
     - name: 准备结束
@@ -108,28 +111,27 @@ jobs:
         git clone -b $REPO_BRANCH --single-branch $REPO_URL openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         cd openwrt
-        if [ build/${{matrix.target}} != build/openwrt ]; then
-          rm -rf package/ctcgfw/luci-app-argon-config
+        if [ ${{matrix.target}} != openwrt ]; then
           rm -rf package/lienol/luci-app-timecontrol
-          rm -rf package/ctcgfw/luci-theme-argonv3
-          rm -rf package/lean/luci-app-netdata
-          rm -rf package/lean/luci-theme-argon
-          rm -rf package/lean/k3screenctrl
+          rm -rf package/ntlf9t/{smartdns,luci-app-smartdns}
+          rm -rf package/ctcgfw/{luci-app-argon-config,luci-theme-argonv3}
+          rm -rf package/lean/{luci-app-netdata,luci-theme-argon,k3screenctrl}
         fi
 
 
     - name: 加载源,patch补丁和自定义设置
       run: |
-        svn co https://github.com/281677160/N1/trunk reform
+        if [ ${{matrix.target}} = Lede_phicomm_n1 -o ${{matrix.target}} = Project_phicomm_n1 ];then
+          svn co https://github.com/281677160/N1/trunk reform
+        fi
         cp -Rf `find ./ -maxdepth 1 -type d ! -path './openwrt' ! -path './'` openwrt
         cd openwrt
         if [ -f "build/${{matrix.target}}/$DIY_P1_SH" ]; then
           chmod +x build/${{matrix.target}}/$DIY_P1_SH
           /bin/bash "build/${{matrix.target}}/$DIY_P1_SH"
         fi
-        if [ build/${{matrix.target}} != build/openwrt ]; then
+        if [ ${{matrix.target}} != openwrt ]; then
           git clone -b $REPO_BRANCH --single-branch https://github.com/281677160/openwrt-package package/danshui
-          git clone -b adg --single-branch https://github.com/281677160/openwrt-package package/adg
         fi
         ./scripts/feeds clean && ./scripts/feeds update -a && ./scripts/feeds install -a && ./scripts/feeds install -a
         if [ -f "build/${{matrix.target}}/$DIY_P2_SH" ]; then
@@ -143,24 +145,26 @@ jobs:
          cp -rf build/${{matrix.target}}/files files
          chmod -R 777 build/${{matrix.target}}/files/* ./
         fi
-        if [ -n "$(ls -A "build/${{matrix.target}}/files/usr/bin/AdGuardHome" 2>/dev/null)" ]; then
-         cp -rf package/adg/AdGuardHome files/usr/bin/AdGuardHome
-         chmod -R 777 files/usr/bin/AdGuardHome/AdGuardHome
-        fi
         if [ -n "$(ls -A "build/${{matrix.target}}/diy" 2>/dev/null)" ]; then
          cp -Rf build/${{matrix.target}}/diy/* ./
         fi
         [ -e build/${{matrix.target}}/$CONFIG_FILE ]
         mv build/${{matrix.target}}/$CONFIG_FILE .config
         make defconfig
+        rm -rf {LICENSE,README,README.md}
+        rm -rf ./*/{LICENSE,README,README.md}
+        rm -rf ./*/*/{LICENSE,README,README.md}
         git clone https://github.com/openwrt-dev/po2lmo.git
         pushd po2lmo
         make && sudo make install
         popd
 
     - name: SSH远程连接（若打开SSH,运行到此必须刷新一次网页耐心等待代码展开,不能频繁刷新）
-      uses: garypang13/debugger-action@master
+      uses: 281677160/debugger-action@master
       if: env.SSH_ACTIONS == 'true' || (github.event.inputs.ssh == 'ssh' && github.event.inputs.ssh  != 'false')
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
     - name: 下载软件包
       id: package
@@ -188,10 +192,10 @@ jobs:
         name: OpenWrt_bin_${{matrix.target}}_${{ env.date }}
         path: openwrt/bin
 
-    - name: 打包n1、vplus、beikeyun、l1pro、s905x3固件
+    - name: 编译N1机型时,打包n1、vplus、beikeyun、l1pro、s905x3固件
       run: |
-        if [ -n "$(ls -A "openwrt/bin/targets/armvirt" 2>/dev/null)" ]; then
-         mv -f openwrt/bin/targets/armvirt/*/*.tar.gz reform/openwrt
+        if [ ${{matrix.target}} = Lede_phicomm_n1 -o ${{matrix.target}} = Project_phicomm_n1 ];then
+         cp openwrt/bin/targets/armvirt/*/*.tar.gz reform/openwrt
          cd reform
          sudo ./gen_openwrt -d -k latest
          devices=("phicomm-n1" "vplus" "beikeyun" "l1pro" "s905x3")
@@ -203,7 +207,7 @@ jobs:
            cd ../
            echo "firmware_$x=$filename" >> $GITHUB_ENV
          done
-           cd ../ && cd ../
+           cd ../../
            mv -f reform/out/*/*.img.gz openwrt/bin/targets/armvirt/*
         fi
 
@@ -213,7 +217,6 @@ jobs:
         mkdir config
         find openwrt/bin/targets/ -name "*config.buildinfo*" | xargs -i mv -f {} config
         if [ -n "$(ls -A "openwrt/bin/targets/x86" 2>/dev/null)" ]; then
-         find openwrt/bin/targets/x86/* -name "*rootfs*" | xargs -i mv -f {} openwrt/bin/targets
          find openwrt/bin/targets/x86/* -name "*kernel*" | xargs -i mv -f {} openwrt/bin/targets
         fi
         cd openwrt/bin/targets/*/*
@@ -222,7 +225,6 @@ jobs:
         find -name "*sha256sums*" | xargs -i mv -f {} packages
         find -name "*manifest*" | xargs -i mv -f {} packages
         find -name "*vmlinuz*" | xargs -i mv -f {} packages
-        find -name "*esxi.vmdk*" | xargs -i mv -f {} packages
         find -name "*Image*" | xargs -i mv -f {} packages
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
