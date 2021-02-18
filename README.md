@@ -1,19 +1,29 @@
-# Actions-OpenWrt
+# 择要
 
 #### - 【[Telegram交流群](https://t.me/joinchat/AAAAAE3eOMwEHysw9HMcVQ)】-&nbsp;&nbsp;&nbsp;- 【[Telegram下载](https://telegram.org/)】-&nbsp;&nbsp;&nbsp;- 【[Telegram使用中文方法](https://github.com/danshui-git/shuoming/blob/master/tele.md)】-
 #
 
-- 2021月1月26号说明，26号开始插件包取消任何科学上网插件，有需要的请自行拉取《[拉取插件方法](https://github.com/danshui-git/shuoming/blob/master/ming.md)》，如果编译出现错误或者什么情况的，请大家都拉取我的最新仓库使用。
+- 《[附带定时更新的新仓库](https://github.com/281677160/AutoBuild-OpenWrt)》
+
+- #### 2021年2月17号说明，大家如果编译project源码出现libncursesw6错误的话，不要慌，这个是上游出问题，等修复
+
+- ## 编译ssr plus的时候需要选择v2ray-plugin的，在diy-1.sh或者diy-2.sh里面增加一下命令就好了
+
+      curl -fsSL  https://raw.githubusercontent.com/xiaorouji/openwrt-passwall/main/v2ray-plugin/Makefile > package/lean/v2ray-plugin/Makefile
+
+- 2021年1月26号说明，26号开始插件包取消任何科学上网插件，有需要的请自行拉取《[拉取插件方法](https://github.com/danshui-git/shuoming/blob/master/ming.md)》，如果编译出现错误或者什么情况的，请大家都拉取我的最新仓库使用。
 
 - 弄了一个启动教程视频，mp4格式，存网盘了，需要的自己下载。《[谷歌云](https://drive.google.com/drive/folders/1WEUtVfiVtR5lyG8aX4RcDGdUPV6uMlxt?usp=sharing)》、《[百度（密码：apek）](https://pan.baidu.com/s/1RVi4nN8Y1ak9LTWzhV5bSQ)》、《[微云](https://share.weiyun.com/33SgJdCO)》
 
+- 请大家编译任何科学上网插件的时候不要选择v2ray，因为xray已经兼容了v2ray的了，同时选择会出现编译错误。【[图片说明](https://github.com/danshui-git/shuoming/blob/master/cg.md)】
+
 - 制作了一个一键重新拉取我编译仓库的脚本，有需要的可以去看看。《[一键重新拉取编译仓库](https://github.com/281677160/sync-forks)》
 
-- 选择Lede_phicomm_n1或Project_phicomm_n1的机型文件夹编译的话，会自动编译出（ N1、微加云、贝壳云、我家云、S9xxx ）OpenWrt固件，固件已经自动打包好【[写入emmc方法](https://github.com/danshui-git/shuoming/blob/master/n1.md)】
+- 选择Lede_phicomm_n1或Project_phicomm_n1的机型文件夹编译的话，会自动编译出（ N1、微加云、贝壳云、我家云、S9xxx ）OpenWrt固件，固件已经自动打包好，把固件写入优盘启动再在openwrt里面用命令写入emmc即可【[写入emmc方法](https://github.com/danshui-git/shuoming/blob/master/n1.md)】
 
 - 除了编译 openwrt 机型外，其他机型都直接打入了常用插件了，不需要自己再拉取插件，除非我的插件包跟源码自带的都没有，你就自己添加吧 【[插件包](https://github.com/281677160/openwrt-package)】
 #
-## 编译说明：
+## 编译教程：
 ### - 以下的说明教程都是在我另外的仓库的，查看说明时候就跳转到另外仓库了，浏览器回退就会回来，别拉取到我说明的仓库，注意了！
 #
 - 1、`注册及登录github账号`《[注册链接](https://github.com)》
@@ -28,7 +38,7 @@
 #
 - 6、修改好ip后，根据个人需求打开或者关闭各功能，开关控制在build文件夹--你要编译的对应机型文件夹（跟第4步修改的机型一样的文件夹）里的【settings.ini】设置《[各开关控制教程](https://github.com/danshui-git/shuoming/blob/master/kaiguan.md)》
 #
-- 7、第4、5、6步骤都完成后，就可以启动编译了《[[启动教程](https://github.com/danshui-git/shuoming/blob/master/%E6%89%8B%E5%8A%A8%E5%BC%80%E5%A7%8B.md)]》,启动编译的时候也可以顺手打开SSH连接的，请认真看教程的第一张图片
+- 7、第4、5、6步骤都完成后，就可以启动编译了《[[启动教程](https://github.com/danshui-git/shuoming/blob/master/%E6%89%8B%E5%8A%A8%E5%BC%80%E5%A7%8B.md)]》,启动编译的时候也可以顺手打开SSH连接的，在点击绿色按钮启动编译之前设置好SSH顺带启动就可以，请认真看教程的第二张图片
 #
 - 8、`SSH远程连接服务器配置固件`《[SSH连接教程](https://github.com/danshui-git/shuoming/blob/master/3SSH%E8%BF%9E%E6%8E%A5%E8%AF%B4%E6%98%8E.md)》，SSH远程默认关闭的，需要打开的请在build文件夹里面的对应机型文件夹的‘settings.ini’设置，或者按钮启动编译的时候顺手打开
 #
